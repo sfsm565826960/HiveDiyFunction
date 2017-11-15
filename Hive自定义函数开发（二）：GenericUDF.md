@@ -14,7 +14,7 @@
 - 输入：姓名、成绩1、成绩2...（假设每次考试考的科目数不定）
 - 输出：`Hello, {{ name }}. You took {{ scoreCount }} courses.Total score is {{ scoreTotal }}, and average score is {{ scoreAverage }}.`
 
-&emsp;&emsp;具体请查看[[完整代码]]()，下面分别对这三个方法进行解释：
+&emsp;&emsp;具体请查看[[完整代码]](HiveDiyFunction/src/com/franchen/genericudf/HiveGenericUDF.java)，下面分别对这三个方法进行解释：
 
 ##### initialize
 ```
