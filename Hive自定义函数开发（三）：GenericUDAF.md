@@ -1,4 +1,4 @@
-# Hive自定义函数开发（二）：GenericUDF
+# Hive自定义函数开发（三）：GenericUDAF
 
 > ### 前言
 &emsp;&emsp;前面两节我们详细介绍了一行进一行出的UDF，它能适用于大部分的业务场景。然而对于需要分组合并运算（涉及Group By）的场景就不太适用，这时候就需要用到UDAF。
