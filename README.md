@@ -7,4 +7,6 @@
 
 [Hive自定义函数开发（二）：GenericUDF](Hive自定义函数开发（二）：GenericUDF.md)
 
+[Hive自定义函数开发（三）：GenericUDAF](Hive自定义函数开发（三）：GenericUDAF.md)
+
 [完整源代码](HiveDiyFunction/src/com/franchen)
