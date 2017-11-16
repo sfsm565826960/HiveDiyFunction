@@ -90,7 +90,7 @@ public String getDisplayString(String[] arg0) {
 
 > ### 测试
 ```
-Hive> add jar /home/rcgzz/cdc/HiveGenericUDF.jar;
+Hive> add jar HiveGenericUDF.jar;
 Hive> drop temporary function test_generic_udf;
 Hive> create temporary function test_generic_udf as 'com.franchen.genericudf.HiveGenericUDF';
 
