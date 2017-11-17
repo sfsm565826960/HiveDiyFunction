@@ -125,9 +125,9 @@ public class HiveGenericUDAF extends AbstractGenericUDAFResolver {
       );
     }
     if (info[0].getCategory() != ObjectInspector.Category.PRIMITIVE) {
-      throw new UDFArgumentTypeException(0,  
+      throw new UDFArgumentTypeException(1,  
                 "Only primitive type arguments are accepted but "  
-                + info[0].getTypeName() + " is passed."); 
+                + info[1].getTypeName() + " is passed."); 
     }
 
     // 2. 根据需求返回不同的GenericUDAFEvaluator类
