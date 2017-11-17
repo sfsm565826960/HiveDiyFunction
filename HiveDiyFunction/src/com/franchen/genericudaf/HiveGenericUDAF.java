@@ -34,11 +34,11 @@ public class HiveGenericUDAF extends AbstractGenericUDAFResolver {
 			throws SemanticException {
 		/**
 		 * Note:
-		 * ÕâÀïµÄinfo¹¦ÄÜ¸ü¼ÓÈ«Ãæ£¬¿ÉÒÔÅĞ¶ÏµÄ¹¦ÄÜ¸ü¶à¡£
-		 * ÀıÈçinfo.isAllColumns()ºÍinfo.isDistinct()
-		 * ÔÚgetEvaluator(TypeInfo[] info)ÖĞ¾ÍÃ»ÓĞ¡£
-		 * Í¨¹ıinfo.getParameters()¼´¿É»ñµÃÖØÔØº¯ÊıµÄTypeInfo[] info¡£
-		 * Ö®ËùÒÔÔÙÊµÏÖgetEvaluator(TypeInfo[] info)£¬ÊÇÎªÁËÂß¼­¸ü¼ÓÇå³ş¡¢¼ò½à¡£
+		 * è¿™é‡Œçš„infoåŠŸèƒ½æ›´åŠ å…¨é¢ï¼Œå¯ä»¥åˆ¤æ–­çš„åŠŸèƒ½æ›´å¤šã€‚
+		 * ä¾‹å¦‚info.isAllColumns()å’Œinfo.isDistinct()
+		 * åœ¨getEvaluator(TypeInfo[] info)ä¸­å°±æ²¡æœ‰ã€‚
+		 * é€šè¿‡info.getParameters()å³å¯è·å¾—é‡è½½å‡½æ•°çš„TypeInfo[] infoã€‚
+		 * ä¹‹æ‰€ä»¥å†å®ç°getEvaluator(TypeInfo[] info)ï¼Œæ˜¯ä¸ºäº†é€»è¾‘æ›´åŠ æ¸…æ¥šã€ç®€æ´ã€‚
 		 */
 		
 		if (info.isAllColumns()){
@@ -63,11 +63,11 @@ public class HiveGenericUDAF extends AbstractGenericUDAFResolver {
 		
 		/**
 		 * Note:
-		 * ÕâÀïÊµÏÖ¶Ô²ÎÊı¸öÊı£¬ÀàĞÍµÄ¼ì²é£¬
-		 * ²¢¸ù¾İ²ÎÊıÀàĞÍµ÷ÓÃ²»Í¬µÄGenericUDAFEvaluator
+		 * è¿™é‡Œå®ç°å¯¹å‚æ•°ä¸ªæ•°ï¼Œç±»å‹çš„æ£€æŸ¥ï¼Œ
+		 * å¹¶æ ¹æ®å‚æ•°ç±»å‹è°ƒç”¨ä¸åŒçš„GenericUDAFEvaluator
 		 */
 		
-		// 1. ¼ì²é²ÎÊı¸öÊıºÍÀàĞÍ
+		// 1. æ£€æŸ¥å‚æ•°ä¸ªæ•°å’Œç±»å‹
 		if (info.length != 1){
 			throw new UDFArgumentTypeException(
 					info.length - 1,
@@ -80,8 +80,8 @@ public class HiveGenericUDAF extends AbstractGenericUDAFResolver {
 			          + info[0].getTypeName() + " is passed."); 
 		}
 		
-		// 2. ¸ù¾İĞèÇó·µ»Ø²»Í¬µÄGenericUDAFEvaluatorÀà
-		switch (((PrimitiveTypeInfo) info[0]).getPrimitiveCategory()) {
+		// 2. æ ¹æ®éœ€æ±‚è¿”å›ä¸åŒçš„GenericUDAFEvaluatorç±»
+		switch (((PrimitiveTypeInfo) info[1]).getPrimitiveCategory()) {
 		case INT:
 //			return new IntGenericUDAF();
 		case DOUBLE:
@@ -114,19 +114,19 @@ public class HiveGenericUDAF extends AbstractGenericUDAFResolver {
 		Object[] partialResult;
 		
 		/**
-		 * ³õÊ¼»¯GenericUDAFEvaluator
+		 * åˆå§‹åŒ–GenericUDAFEvaluator
 		 */
 		@Override
 		public ObjectInspector init(Mode m, ObjectInspector[] parameters)
 				throws HiveException {
-			// 1. Ğû¸æ²ÎÊıÖ»ÓĞÒ»¸ö£¬·ñÔò±¨´í
+			// 1. å®£å‘Šå‚æ•°åªæœ‰ä¸€ä¸ªï¼Œå¦åˆ™æŠ¥é”™
 			assert (parameters.length == 1);
-			// 2. ³õÊ¼»¯¸¸Àà
+			// 2. åˆå§‹åŒ–çˆ¶ç±»
 			super.init(m, parameters);
 			
-			// 3. ÉèÖÃÊäÈëÀàĞÍ
+			// 3. è®¾ç½®è¾“å…¥ç±»å‹
 			if (m == Mode.PARTIAL1 || m == Mode.COMPLETE) {
-				// µÚ¶ş½ÚËµ¹ı£¬Ê¹ÓÃText×÷ÎªIntWritableºÍDoubleWritableµÄÖĞ¼ä²ã
+				// ç¬¬äºŒèŠ‚è¯´è¿‡ï¼Œä½¿ç”¨Textä½œä¸ºIntWritableå’ŒDoubleWritableçš„ä¸­é—´å±‚
 				inputOI = PrimitiveObjectInspectorFactory.javaStringObjectInspector;
 			} else {
 				soi = (StructObjectInspector) parameters[0];
@@ -136,7 +136,7 @@ public class HiveGenericUDAF extends AbstractGenericUDAFResolver {
 				countOI = (IntObjectInspector) countField.getFieldObjectInspector();
 			}
 			
-			// 4. ÉèÖÃ·µ»ØÀàĞÍ
+			// 4. è®¾ç½®è¿”å›ç±»å‹
 			if (m == Mode.FINAL || m == Mode.COMPLETE) {
 				result = new Text();
 				return PrimitiveObjectInspectorFactory.javaStringObjectInspector;
@@ -155,7 +155,7 @@ public class HiveGenericUDAF extends AbstractGenericUDAFResolver {
 			
 		}
 		
-		// ¼Ì³ĞAggregationBufferÀàÊµÏÖÊı¾İ¶ÔÏó
+		// ç»§æ‰¿AggregationBufferç±»å®ç°æ•°æ®å¯¹è±¡
 		static class StudentScore implements AggregationBuffer{
 			double scoreTotal;
 			int scoreCount;
@@ -178,16 +178,16 @@ public class HiveGenericUDAF extends AbstractGenericUDAFResolver {
 		}
 
 		/**
-		 * ·µ»ØĞÂµÄAggregationBuffer¶ÔÏó
+		 * è¿”å›æ–°çš„AggregationBufferå¯¹è±¡
 		 */
 		@Override
 		public AggregationBuffer getNewAggregationBuffer() throws HiveException {
-			// TODO ×Ô¶¯Éú³ÉµÄ·½·¨´æ¸ù
+			// TODO è‡ªåŠ¨ç”Ÿæˆçš„æ–¹æ³•å­˜æ ¹
 			return new StudentScore();
 		}
 		
 		/**
-		 * ¸´ÓÃAggregationBuffer¶ÔÏó
+		 * å¤ç”¨AggregationBufferå¯¹è±¡
 		 */
 		@Override
 		public void reset(AggregationBuffer arg0) throws HiveException {
@@ -196,13 +196,13 @@ public class HiveGenericUDAF extends AbstractGenericUDAFResolver {
 		}
 
 		/**
-		 * ´¦ÀíÒ»ĞĞÊı¾İ
+		 * å¤„ç†ä¸€è¡Œæ•°æ®
 		 */
 		@Override
 		public void iterate(AggregationBuffer arg0, Object[] arg1)
 				throws HiveException {
 			assert(arg1.length == 1);
-			// ´¦ÀíÊı¾İ
+			// å¤„ç†æ•°æ®
 			if (null != arg1 && null != arg1[0]) {
 				double score = PrimitiveObjectInspectorUtils.getDouble(arg1[0], inputOI);
 				StudentScore studentScore = (StudentScore) arg0;
@@ -211,7 +211,7 @@ public class HiveGenericUDAF extends AbstractGenericUDAFResolver {
 		}
 		
 		/**
-		 * ·µ»Ø²¿·ÖÊı¾İ£¬ÓÃÓÚmerge
+		 * è¿”å›éƒ¨åˆ†æ•°æ®ï¼Œç”¨äºmerge
 		 */
 		@Override
 		public Object terminatePartial(AggregationBuffer arg0)
@@ -223,7 +223,7 @@ public class HiveGenericUDAF extends AbstractGenericUDAFResolver {
 		}
 
 		/**
-		 * ÓÃÓÚºÏ²¢AggregationBuffer¶ÔÏó£¬¿ÉÄÜÀ´Ô´terminatePartial»òÊÇterminate
+		 * ç”¨äºåˆå¹¶AggregationBufferå¯¹è±¡ï¼Œå¯èƒ½æ¥æºterminatePartialæˆ–æ˜¯terminate
 		 */
 		@Override
 		public void merge(AggregationBuffer arg0, Object arg1)
@@ -234,9 +234,9 @@ public class HiveGenericUDAF extends AbstractGenericUDAFResolver {
 		}
 		
 		/**
-		 * ÓÃÓÚ×îÖÕ´¦Àí£¨Reduce½×¶Î£©ºÍ·µ»Ø½á¹û
-		 * ÕâÊ±µÄAggregationBufferÒÑ¾­ºÏ²¢ÁËGroupÀïËùÓĞµÄÔªËØ£¬
-		 * ¿ÉÒÔ½øĞĞÆäËû´¦Àí£¬ÀıÈçÎÄ±¾ĞÔ±ğ·ÖÀà¾ÍÔÚÕâÀïÖ´ĞĞ¡£
+		 * ç”¨äºæœ€ç»ˆå¤„ç†ï¼ˆReduceé˜¶æ®µï¼‰å’Œè¿”å›ç»“æœ
+		 * è¿™æ—¶çš„AggregationBufferå·²ç»åˆå¹¶äº†Groupé‡Œæ‰€æœ‰çš„å…ƒç´ ï¼Œ
+		 * å¯ä»¥è¿›è¡Œå…¶ä»–å¤„ç†ï¼Œä¾‹å¦‚æ–‡æœ¬æ€§åˆ«åˆ†ç±»å°±åœ¨è¿™é‡Œæ‰§è¡Œã€‚
 		 */
 		@Override
 		public Object terminate(AggregationBuffer arg0) throws HiveException {
