@@ -81,7 +81,7 @@ public class HiveGenericUDAF extends AbstractGenericUDAFResolver {
 		}
 		
 		// 2. 根据需求返回不同的GenericUDAFEvaluator类
-		switch (((PrimitiveTypeInfo) info[1]).getPrimitiveCategory()) {
+		switch (((PrimitiveTypeInfo) info[0]).getPrimitiveCategory()) {
 		case INT:
 //			return new IntGenericUDAF();
 		case DOUBLE:
